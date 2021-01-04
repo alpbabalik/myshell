@@ -115,6 +115,7 @@ int main(int argc, char* argv[]){
   
   while(1){
     command_line = give_prompt();
+    add_history(command_line);
     if(command_line == NULL)
       print_error("Unable to read from stdin. Please check your input and try again!");
     strcat(command_line,"\n");

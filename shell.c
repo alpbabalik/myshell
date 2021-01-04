@@ -22,6 +22,18 @@ struct process {
 };
 struct process *jobs;
 
+void print_error(char *msg){
+  printf("%s\n", msg);
+  exit(1);
+}
+void malloc_error_check(void *ptr){
+  if(ptr == NULL){
+    printf("Memory allocation error!\n");
+    exit(1);
+  }
+
+}
+
 char* give_prompt(){
   char prompt[100] = "";
   char *lgn;
@@ -30,6 +42,9 @@ char* give_prompt(){
   char currDir[1024] = "";
   int hostname = gethostname(host, sizeof(host));
   lgn = (char*)malloc(20*sizeof(char));
+  malloc_error_check(lgn);
+  command_line = malloc(max_cmd_len);
+  malloc_error_check(command_line);
   getlogin_r(lgn, 20);
   if(first_call){
     // To clean the screen
@@ -38,19 +53,15 @@ char* give_prompt(){
     first_call = 0;
   }
   sprintf(prompt,"(base) %s@%s %s %% ",lgn, host, getcwd(currDir, sizeof(currDir))); 
-  command_line = malloc(max_cmd_len);
+  
   command_line= readline(prompt);
   return command_line;
-}
-
-void print_error(char *msg){
-  printf("%s\n", msg);
-  exit(1);
 }
 
 
 char** parse_command_line(char *command_line){
   char** arg_list = malloc(sizeof(char*)*max_num_args);
+  malloc_error_check(arg_list);
   const char delimeter[] = " \n";
   char local_command_line[max_cmd_len];
   char* ptr = local_command_line;
@@ -94,6 +105,7 @@ int main(int argc, char* argv[]){
     }
    }
   jobs = malloc(maxjobs * sizeof(struct process));
+  malloc_error_check(jobs);
   for(int i = 0; i<maxjobs; i++){
     jobs[i].pid = 0;
     jobs[i].process_state = I;

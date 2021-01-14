@@ -24,11 +24,13 @@ struct process *jobs;
 
 void print_error(char *msg){
   printf("%s\n", msg);
+  fflush(stdout);
   exit(1);
 }
 void malloc_error_check(void *ptr){
   if(ptr == NULL){
     printf("Memory allocation error!\n");
+    fflush(stdout);
     exit(1);
   }
 
@@ -126,8 +128,15 @@ int main(int argc, char* argv[]){
     if(process_id < 0)
       print_error("Failed to create child process");
     else if(process_id == 0){
-      if(execvp(arg_list[0], arg_list) < 0)
-	      print_error("Failed to execute given command");
+      if(strcmp("cd", arg_list[0]) == 0){
+        if(chdir(arg_list[1]) == -1)
+          print_error("Failed to execute given command");
+          
+      }
+      else{
+        if(execvp(arg_list[0], arg_list) < 0)
+          print_error("Failed to execute given command");
+      }
       free(arg_list);
     }
     else {

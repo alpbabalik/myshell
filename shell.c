@@ -90,6 +90,7 @@ int main(int argc, char* argv[]){
   char* command_line;
   int process_id;
   char **arg_list;
+  int status;
   if(argc >= 2){
     for(counter = 1; counter<argc; counter++){
       if(strcmp(argv[counter], "MAXJOBS") == 0){
@@ -130,7 +131,7 @@ int main(int argc, char* argv[]){
       free(arg_list);
     }
     else {
-      wait(NULL);
+      waitpid(process_id, &status, 0);
     }
   }
   return 0;
